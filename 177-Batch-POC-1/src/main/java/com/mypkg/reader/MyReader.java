@@ -13,8 +13,7 @@ public class MyReader implements ItemReader<String> {
 
 	@Override
 	public String read() throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
-
-		if (users[count] != null)
+		if (count < users.length)
 			return users[count++];
 		else
 			return null;

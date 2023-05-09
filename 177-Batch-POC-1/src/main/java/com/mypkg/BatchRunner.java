@@ -14,7 +14,7 @@ public class BatchRunner implements CommandLineRunner {
 	@Autowired
 	private JobLauncher launcher;
 	@Autowired
-	Job job;
+	private Job job;
 
 	@Override
 	public void run(String... args) throws Exception {

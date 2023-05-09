@@ -8,7 +8,7 @@ public class MyProcessor implements ItemProcessor<String, String> {
 
 	@Override
 	public String process(String item) throws Exception {
-		return "Username : " + item + "Contact : " + new Random().nextLong(400000000) + 62345678910l + "\n";
+		return "Username : " + item + "Contact : " + new Random().nextLong(6234578910l, 9999999999l) + "\n";
 	}
 
 }

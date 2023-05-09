@@ -1,35 +1,37 @@
 package com.mypkg.batch;
 
 import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.core.job.builder.JobBuilder;
-import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
+import com.mypkg.listener.MyListener;
 import com.mypkg.processor.MyProcessor;
 import com.mypkg.reader.MyReader;
 import com.mypkg.writer.MyWriter;
 
+@Configuration
 @EnableBatchProcessing
-@Component
 public class BatchProcessor {
 
 	@Autowired
 	private StepBuilderFactory stepBuilder;
 
 	@Autowired
-	private JobBuilder jobBuilder;
+	private JobBuilderFactory jobBuilder;
 
-	@Autowired
-	private JobExecutionListener listener;
+	@Bean
+	public MyListener createListener() {
+		return new MyListener();
+	}
 
 	@Bean
 	public ItemReader<String> createItemReader() {
@@ -53,7 +55,8 @@ public class BatchProcessor {
 	}
 
 	@Bean
-	public Job job(JobRepository jobRepository) {
-		return new JobBuilder("myJob").repository(jobRepository).start(createStep()).build();
+	public Job createJob() {
+		return jobBuilder.get("job1").incrementer(new RunIdIncrementer()).listener(createListener()).start(createStep())
+				.build();
 	}
 }
